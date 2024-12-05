@@ -1,55 +1,83 @@
-<!doctype html>
-
-<html>
-    <head>
-        <!-- Recommended meta tags -->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-        <!-- PyScript CSS -->
-        <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-        <!-- CSS for examples -->
-
-        <!-- This script tag bootstraps PyScript -->
-        <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-
-        <!-- for splashscreen -->
-        <style>
-            #loading { outline: none; border: none; background: transparent }
-        </style>
-        <script type="module">
-            const loading = document.getElementById('loading');
-            addEventListener('py:ready', () => loading.close());
-            loading.showModal();
-        </script>
-
-        <title>Raycaster Icosahedron</title>
-
-        <!-- Icosahedron Example Specific CSS -->
-
-        <!-- Script for Three js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.147.0/three.min.js"></script>
-    </head>
-
-    <body>
-        <dialog id="loading">
-            <h1>Loading...</h1>
-        </dialog>
-
-        <div class="container-fluid fixed-top header disable-selection">
-            <div class="row">
-                <div class="col"></div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col"></div>
-                    </div>
-                </div>
-                <div class="col"></div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cmKAN</title>
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        #loading { outline: none; border: none; background: transparent }
+    </style>
+    <script type="module">
+        const loading = document.getElementById('loading');
+        addEventListener('py:ready', () => loading.close());
+        loading.showModal();
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .image-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        img {
+            max-width: 300px;
+            max-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            background: #f9f9f9;
+        }
+        input, select {
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>cmKAN</h1>
+    <div>
+        <label for="task-select">Select a task: </label>
+        <select id="task-select">
+            <option value="raw-to-raw">Raw to Raw</option>
+            <option value="raw-to-rgb">Raw to RGB</option>
+            <option value="rgb-to-rgb">RGB to RGB</option>
+        </select>
+    </div>
+    <div>
+        <label for="image-select">Select an input image: </label>
+        <select id="image-select">
+            <option value="1">Sample 1</option>
+            <option value="2">Sample 2</option>
+            <option value="3">Sample 3</option>
+        </select>
+        <input type="file" id="file-input" accept="image/*" />
+    </div>
+    <div class="container">
+        <div class="image-container">
+            <h3>Input Image</h3>
+            <img id="input-image" alt="Input Image" />
         </div>
-
-        <script type="py" src="./main.py" config="./pyscript.toml"></script>
-
-    </body>
-
+        <div class="image-container">
+            <h3>Output Image</h3>
+            <img id="output-image" alt="Output Image" />
+        </div>
+    </div>
+    <div id="output_upload_pillow"></div>
+    <script type="py" src="./main.py" config="./pyscript.toml"></script>
+</body>
 </html>

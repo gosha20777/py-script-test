@@ -1,2 +1,3 @@
 name = "WebGL Icosahedron"
 description = "An example how to use Three.js and WebGL to render an Icosahedron in PyScript."
+packages = ["numpy", "Pillow"]
