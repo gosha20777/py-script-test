@@ -15,7 +15,7 @@ from PIL.Image import Resampling
 
 
 async def inference(input_image):
-    session_link = 'https://objects.githubusercontent.com/github-production-release-asset-2e65be/898456224/c343e315-0c3b-442a-b663-0e5adc8d52eb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20241210%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241210T151557Z&X-Amz-Expires=300&X-Amz-Signature=765fbc7912261e109ba58159d4d2c51bf4f7035120afd674a791c541ba1a3dec&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3DfiveK.onnx'
+    session_link = 'https://raw.githubusercontent.com/gosha20777/py-script-test/refs/heads/main/demo/fiveK.onnx'
     #session_link = 'http://0.0.0.0:8000/fiveK.onnx'
     session = await ort.InferenceSession.create(session_link)
     input_img = input_image.resize([720,480], Resampling.BILINEAR)
