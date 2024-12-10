@@ -1,14 +1,45 @@
-from js import document, console, Uint8Array, window, File
+from js import document, console, Uint8Array, window, File, Object
 from pyodide.ffi import create_proxy
 from pyodide.http import pyfetch
 import asyncio
 import io
 from PIL import Image, ImageFilter
+import numpy as np
+from js import ort
+from js.ort import Tensor as OrtTensor
+
+from pyodide.ffi import to_js
+
+from PIL import Image
+from PIL.Image import Resampling
 
 
 async def inference(input_image):
-    output_image = input_image.convert('L')
-    return output_image
+    session_link = 'https://github.com/gosha20777/py-script-test/releases/download/0.1.0/fiveK.onnx'
+    #session_link = 'http://0.0.0.0:8000/fiveK.onnx'
+    session = await ort.InferenceSession.create(session_link)
+    input_img = input_image.resize([720,480], Resampling.BILINEAR)
+    input_img = np.asarray(input_img, dtype=np.float32) / 255.0
+    input_img = np.expand_dims(input_img, 0)
+    input_img = np.transpose(input_img, (0,3,1,2))
+    print("Shape: ", input_img.shape)
+    input_img = input_img.reshape(1*3*480*720) 
+    
+    js_arr = to_js(input_img)
+    img_tensor = OrtTensor.new("float32", js_arr, to_js([1, 3, 480, 720]))
+    feeds = to_js({'onnx::ReduceMean_0': img_tensor})
+    console.log("feeds: ", feeds)
+    results = await session.run(Object.fromEntries(feeds))
+    results = results.to_py()['1103']
+    console.log("Results: ", results)
+
+
+    output_img = np.asarray(results.data.to_py(), dtype=np.float32).reshape(1, 3, 480, 720)
+    print("Output Shape: ", output_img.shape)
+    output_img = np.transpose(output_img, (0,2,3,1))[0]
+    print("Output Shape: ", output_img.shape)
+    output_img = Image.fromarray(np.uint8((output_img * 255.0).clip(0, 255)), mode='RGB')
+    return output_img
 
 
 async def process_image(input_image):
@@ -47,9 +78,15 @@ async def _upload_and_show(e):
     
 
 async def _select_and_show(e):
-    #Get the first file from upload
+    task_name = document.getElementById("task-select").value
     img_mane = e.target.value
-    response = await pyfetch('https://cataas.com/cat', method="GET")
+    url = 'https://cataas.com/cat'
+
+    if task_name == 'rgb-to-rgb':
+        if img_mane == '1':
+            url = 'https://raw.githubusercontent.com/gosha20777/cmKAN/refs/heads/main/data/samples/rgb2rgb/input/01.jpg'
+
+    response = await pyfetch(url, method="GET")
     filename = 'select.png'
     with open(filename, mode="wb") as file:
         file.write(await response.bytes())
